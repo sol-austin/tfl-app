@@ -6,16 +6,28 @@ package javafx;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class App extends Application {
     @Override
     public void start(Stage stage) {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-        Label l = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        Scene scene = new Scene(new StackPane(l), 640, 480);
+        TrainList trainList = new TrainList("Stoke Newington");
+
+        Label l = new Label("Welcome to train app");
+        VBox stack = new VBox(l);
+        
+        for (int i = 0; i < trainList.trains.size(); i++) {
+            Train element = trainList.trains.get(i);
+            Text destinationName = new Text(element.destination);
+            Text timeToStation = new Text(String.valueOf(element.timeToStation));
+            HBox row = new HBox(destinationName, timeToStation);
+            stack.getChildren().addAll(row);
+        }
+
+        Scene scene = new Scene(stack, 640, 480);
         stage.setScene(scene);
         stage.show();
     }
