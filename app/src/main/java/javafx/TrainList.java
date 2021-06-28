@@ -47,7 +47,7 @@ public class TrainList {
 
                 for (int j = 0; j < trains.size(); j++) {
                     int curTimeToStation = trains.get(j).timeToStation;
-                    if (curTimeToStation < timeToStation) {
+                    if (curTimeToStation > timeToStation) {
                         this.trains.add(j, element);
                         break;
                     }
