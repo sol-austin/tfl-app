@@ -9,12 +9,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
+import java.text.SimpleDateFormat;  
 
 public class App extends Application {
     @Override
@@ -22,19 +24,27 @@ public class App extends Application {
         TrainList trainList = new TrainList("Stoke Newington");
 
         Label l = new Label("Welcome to train app");
-        VBox stack = new VBox(l);
+        VBox vbox = new VBox(l);
+        vbox.setPrefWidth(640);
         
         for (int i = 0; i < trainList.trains.size(); i++) {
             Train element = trainList.trains.get(i);
             Text destinationName = new Text(element.destination);
             Text timeToStation = new Text(String.valueOf(element.timeToStation));
-            HBox row = new HBox(destinationName, timeToStation);
-            row.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
-            stack.getChildren().addAll(row);
+            String arrivalTimeStr = new SimpleDateFormat("HH:mm").format(element.arrivalTime);
+            Text arrivalTime = new Text(arrivalTimeStr);
+            HBox row = new HBox(arrivalTime, destinationName, timeToStation);
+            row.setPadding(new Insets(15, 12, 15, 12));
+            row.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), Insets.EMPTY)));
+            vbox.getChildren().addAll(row);
+            vbox.setMargin(row, new Insets(10, 10, 10, 10));
         }
 
-        Scene scene = new Scene(stack, 640, 480);
+        ScrollPane scroll = new ScrollPane();
+        scroll.setContent(vbox);
+        Scene scene = new Scene(scroll, 640, 480);
         stage.setScene(scene);
+        vbox.prefWidthProperty().bind(stage.widthProperty().multiply(0.9));
         stage.show();
     }
 

@@ -8,6 +8,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;  
 
 public class TrainList {
     String stationName;
@@ -32,8 +35,10 @@ public class TrainList {
                 JSONObject singleTrain = trainArray.getJSONObject(i);
                 String destination = singleTrain.getString("destinationName");
                 int timeToStation = singleTrain.getInt("timeToStation");
-                Train element = new Train(destination, timeToStation);
-                System.out.println(timeToStation);
+                String arrivalTimeStr = singleTrain.getString("expectedArrival");
+                Date arrivalTime = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ssZ").parse(arrivalTimeStr.replaceAll("Z$", "+0000"));
+
+                Train element = new Train(destination, timeToStation, arrivalTime);
 
                 if (i == 0) {
                     this.trains.add(element);
@@ -52,7 +57,7 @@ public class TrainList {
                     }
                 }
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | ParseException e) {
             e.printStackTrace();
         }
     }
