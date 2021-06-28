@@ -33,8 +33,24 @@ public class TrainList {
                 String destination = singleTrain.getString("destinationName");
                 int timeToStation = singleTrain.getInt("timeToStation");
                 Train element = new Train(destination, timeToStation);
+                System.out.println(timeToStation);
 
-                this.trains.add(element);
+                if (i == 0) {
+                    this.trains.add(element);
+                    continue;
+                }
+
+                for (int j = 0; j < trains.size(); j++) {
+                    int curTimeToStation = trains.get(j).timeToStation;
+                    if (curTimeToStation < timeToStation) {
+                        this.trains.add(j, element);
+                        break;
+                    }
+                    if (j + 1 == trains.size()) {
+                        this.trains.add(element);
+                        break;
+                    }
+                }
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

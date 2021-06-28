@@ -3,6 +3,7 @@
  */
 package javafx;
 
+import javafx.scene.paint.Color;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -10,6 +11,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.geometry.Insets;
 
 public class App extends Application {
     @Override
@@ -24,6 +29,7 @@ public class App extends Application {
             Text destinationName = new Text(element.destination);
             Text timeToStation = new Text(String.valueOf(element.timeToStation));
             HBox row = new HBox(destinationName, timeToStation);
+            row.setBackground(new Background(new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY)));
             stack.getChildren().addAll(row);
         }
 
