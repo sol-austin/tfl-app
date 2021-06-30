@@ -19,10 +19,25 @@ import javafx.geometry.Insets;
 import java.text.SimpleDateFormat;  
 import javafx.scene.text.Font;
 import javafx.scene.layout.Region;
+import javafx.scene.control.Button;
 
 public class App extends Application {
-    @Override
-    public void start(Stage stage) {
+    public Scene trainDetailsView(Stage stage, Train train) {
+        VBox vbox = new VBox();
+
+        Button homeButton = new Button("Return home");
+        homeButton.setOnAction(e -> {
+            stage.setScene(mainView(stage));
+        });
+
+        Text destinationName = new Text(train.destination);
+
+        vbox.getChildren().addAll(homeButton, destinationName);
+        Scene scene = new Scene(vbox, 640, 480);
+        return scene;
+    }
+
+    public Scene mainView(Stage stage) {
         TrainList trainList = new TrainList("Stoke Newington");
 
         Font font = Font.loadFont("file:resources/fonts/NJFont-Book.ttf", 12);
@@ -41,7 +56,12 @@ public class App extends Application {
             Region spacer = new Region();
             spacer.setMinWidth(10);
 
-            HBox row = new HBox(arrivalTime, spacer, destinationName);
+            Button trainButton = new Button("View details");
+            trainButton.setOnAction(e -> {
+                stage.setScene(trainDetailsView(stage, element));
+            });
+
+            HBox row = new HBox(arrivalTime, spacer, destinationName, trainButton);
             row.setPadding(new Insets(15, 12, 15, 12));
             row.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), Insets.EMPTY)));
             vbox.getChildren().addAll(row);
@@ -50,9 +70,14 @@ public class App extends Application {
 
         ScrollPane scroll = new ScrollPane();
         scroll.setContent(vbox);
-        Scene scene = new Scene(scroll, 640, 480);
-        stage.setScene(scene);
         vbox.prefWidthProperty().bind(stage.widthProperty().multiply(0.9));
+        return new Scene(scroll, 640, 480);
+    }
+
+    @Override
+    public void start(Stage stage) {
+        Scene scene = mainView(stage);
+        stage.setScene(scene);
         stage.show();
     }
 
