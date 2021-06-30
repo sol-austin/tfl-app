@@ -17,23 +17,31 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import java.text.SimpleDateFormat;  
+import javafx.scene.text.Font;
+import javafx.scene.layout.Region;
 
 public class App extends Application {
     @Override
     public void start(Stage stage) {
         TrainList trainList = new TrainList("Stoke Newington");
 
-        Label l = new Label("Welcome to train app");
-        VBox vbox = new VBox(l);
+        Font font = Font.loadFont("file:resources/fonts/NJFont-Book.ttf", 12);
+        Font boldFont = Font.loadFont("file:resources/fonts/NJFont-BookBold.ttf", 12);
+
+        VBox vbox = new VBox();
         vbox.setPrefWidth(640);
         
         for (int i = 0; i < trainList.trains.size(); i++) {
             Train element = trainList.trains.get(i);
-            Text destinationName = new Text(element.destination);
-            Text timeToStation = new Text(String.valueOf(element.timeToStation));
             String arrivalTimeStr = new SimpleDateFormat("HH:mm").format(element.arrivalTime);
             Text arrivalTime = new Text(arrivalTimeStr);
-            HBox row = new HBox(arrivalTime, destinationName, timeToStation);
+            arrivalTime.setFont(boldFont);
+            Text destinationName = new Text(element.destination);
+            destinationName.setFont(font);
+            Region spacer = new Region();
+            spacer.setMinWidth(10);
+
+            HBox row = new HBox(arrivalTime, spacer, destinationName);
             row.setPadding(new Insets(15, 12, 15, 12));
             row.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), Insets.EMPTY)));
             vbox.getChildren().addAll(row);
