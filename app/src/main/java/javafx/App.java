@@ -20,14 +20,16 @@ import java.text.SimpleDateFormat;
 import javafx.scene.text.Font;
 import javafx.scene.layout.Region;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 
 public class App extends Application {
-    public Scene trainDetailsView(Stage stage, Train train) {
+    public Scene trainDetailsView(Stage stage, Train train, TrainList trainList) {
+        System.out.println(train.ID);
         VBox vbox = new VBox();
 
         Button homeButton = new Button("Return home");
         homeButton.setOnAction(e -> {
-            stage.setScene(mainView(stage));
+            stage.setScene(mainView(stage, trainList));
         });
 
         Text destinationName = new Text(train.destination);
@@ -37,15 +39,11 @@ public class App extends Application {
         return scene;
     }
 
-    public Scene mainView(Stage stage) {
-        TrainList trainList = new TrainList("Stoke Newington");
-
+    private VBox addTrainsToView(TrainList trainList, VBox vbox, Stage stage) {
+        System.out.println("NEW TRAINS VIEW");
         Font font = Font.loadFont("file:resources/fonts/NJFont-Book.ttf", 12);
         Font boldFont = Font.loadFont("file:resources/fonts/NJFont-BookBold.ttf", 12);
 
-        VBox vbox = new VBox();
-        vbox.setPrefWidth(640);
-        
         for (int i = 0; i < trainList.trains.size(); i++) {
             Train element = trainList.trains.get(i);
             String arrivalTimeStr = new SimpleDateFormat("HH:mm").format(element.arrivalTime);
@@ -58,7 +56,7 @@ public class App extends Application {
 
             Button trainButton = new Button("View details");
             trainButton.setOnAction(e -> {
-                stage.setScene(trainDetailsView(stage, element));
+                stage.setScene(trainDetailsView(stage, element, trainList));
             });
 
             HBox row = new HBox(arrivalTime, spacer, destinationName, trainButton);
@@ -68,6 +66,30 @@ public class App extends Application {
             vbox.setMargin(row, new Insets(10, 10, 10, 10));
         }
 
+        return vbox;
+    }
+
+    public Scene mainView(Stage stage, TrainList trainList) {
+        VBox vbox = new VBox();
+        vbox.setPrefWidth(640);
+
+        TextField textField = new TextField();
+        Button button = new Button("Update");
+        button.setOnAction(e -> {
+            trainList.updateStationID();
+            stage.setScene(mainView(stage, trainList));
+        });
+
+        textField.setPromptText("Search here!");
+        textField.textProperty().addListener((obs, oldValue, newValue) -> {
+            trainList.updateStationName(newValue);
+        });
+
+        HBox hbox = new HBox(textField, button);
+        vbox.getChildren().addAll(hbox);
+
+        vbox = addTrainsToView(trainList, vbox, stage);
+
         ScrollPane scroll = new ScrollPane();
         scroll.setContent(vbox);
         vbox.prefWidthProperty().bind(stage.widthProperty().multiply(0.9));
@@ -76,7 +98,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        Scene scene = mainView(stage);
+        TrainList trainList = new TrainList("");
+        Scene scene = mainView(stage, trainList);
         stage.setScene(scene);
         stage.show();
     }
